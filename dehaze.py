@@ -1,11 +1,10 @@
 import argparse
-import numpy as np
 import cv2
-
-from window import SlidingWindow
-from ransac import ransac
-
 import matplotlib.pyplot as plt
+import numpy as np
+
+from ransac import ransac
+from window import SlidingWindow
 
 
 def dehaze(image_path):
@@ -18,13 +17,14 @@ def dehaze(image_path):
 
     for window in sliding_window:
         patch = window.patch
-        color_line = ransac(patch, iterations=30, threshold=0.02)
+        color_line = ransac(patch, iterations=3)
 
         if color_line.valid(airlight=airlight):
             transmission_image[window.y, window.x] = color_line.transmission
 
     plt.imshow(transmission_image)
     plt.show()
+    print(transmission_image)
 
 
 def main():

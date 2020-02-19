@@ -1,6 +1,10 @@
-import numpy as np
 import math
+import numpy as np
 import vg
+
+import thresholds
+
+np.seterr(divide='ignore', invalid='ignore')
 
 
 class ColorLine:
@@ -28,7 +32,6 @@ class ColorLine:
 
     def valid(self, airlight):
         """ Returns True when a color-line passes all quality tests. """
-
         self.calculate_transmission(airlight)
         passed_all_tests = (self.significant_line_support
                             and self.positive_reflectance()
@@ -42,7 +45,7 @@ class ColorLine:
     def significant_line_support(self):
         """ Test whether enough points support a color-line. """
         total_votes = self.patch.size
-        threshold = 0.4 * total_votes
+        threshold = thresolds.support * total_votes
 
         if self.support_matrix.sum() < threshold:
             return False
@@ -60,10 +63,9 @@ class ColorLine:
         """ Ensure the angle between the color-line orientation and
             atmospheric light vector is large enough.
         """
-        threshold = math.pi / 12
         angle = vg.angle(airlight, self.direction)
 
-        return angle > threshold
+        return angle > thresholds.angle
 
     def unimodality(self):
         """ Ensure the support points projected onto the color-line
@@ -72,7 +74,6 @@ class ColorLine:
         a, b = self.normalize_coefficients()
 
         total_score = 0
-        threshold = 0.07
 
         for idy, row in enumerate(self.patch):
             for idx, pixel in enumerate(row):
@@ -84,7 +85,7 @@ class ColorLine:
 
         total_score = total_score / np.sum(self.support_matrix)
         total_score = abs(total_score)
-        return total_score < threshold
+        return total_score < thresholds.unimodal
 
     def normalize_coefficients(self):
         """ Returns the variables a and b needed for normalizing
@@ -114,7 +115,6 @@ class ColorLine:
             Algorithm taken from http://geomalgorithms.com/a07-_distance.html,
             See https://www.youtube.com/watch?v=HC5YikQxwZA for algebraic solution.
         """
-        threshold = 0.05
         v = airlight
         u = self.direction
         w = v
@@ -128,7 +128,7 @@ class ColorLine:
         tc = (a * e - b * d) / dd
         dp = w + (sc * u) - (tc * v)
         length = np.linalg.norm(dp)
-        return length < threshold
+        return length < thresholds.intersection
 
     def valid_transmission(self):
         """ Ensure the transmission falls within a valid range. """
@@ -136,8 +136,6 @@ class ColorLine:
 
     def sufficient_shading_variability(self):
         """ Ensure there is sufficient variability in the shading. """
-        threshold = 0.02
-
         samples = []
         for idy, row in enumerate(self.patch):
             for idx, pixel in enumerate(row):
@@ -149,7 +147,7 @@ class ColorLine:
         variance = np.var(samples)
         score = np.sqrt(variance) / self.transmission
 
-        return score > threshold
+        return score > thresholds.shading
 
     def calculate_transmission(self, airlight):
         """ Determine the transmission, given the color-line and airlight.

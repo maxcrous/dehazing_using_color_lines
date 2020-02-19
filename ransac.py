@@ -32,7 +32,7 @@ def ransac(patch, iterations=30, threshold=0.02):
     point = None
     patch_flat = np.reshape(patch, (-1, 3))
 
-    for idx in range(iterations):
+    for _ in range(iterations):
         v1, v2 = choice(patch_flat, size=2, replace='False')
         d1 = v2 - v1
         support = 0
@@ -83,7 +83,10 @@ def projection(v1, v2):
     Returns:
         result: A vector projection.
     """
-    result = (np.dot(v1, v2) / np.dot(v1, v1)) * v1
+    if not np.array_equal(v1, np.zeros(3)):
+        result = (np.dot(v1, v2) / np.dot(v1, v1)) * v1
+    else:
+        result = np.zeros(3)
     return result
 
 
