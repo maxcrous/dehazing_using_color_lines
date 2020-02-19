@@ -24,9 +24,8 @@ def ransac(patch, iterations=30, threshold=0.02):
         threshold (float): The distance threshold between the hypothesis line
         and a point for the line to be considered a good fit for the point.
     Returns:
-        point (3D numpy array): A vector representing a point on the color-line.
-        direction (3D numpy array): The color-lines direction vector.
-        best_support (int): The number of points that support the best color-line.
+        color_line (ColorLine): An object holding all information related to
+        the color line.
     """
     best_support = -np.inf
     direction = None
@@ -94,6 +93,15 @@ def create_support_matrix(patch, point, direction, threshold):
     Given a threshold, each pixel in a patch either does or doesn't
     fit the color-line. This matrix has the same size as a patch and
     contains `True` if that patch pixel supports the color-line.
+
+    Args:
+        patch: A square patch of an image.
+        point: A point on the color line.
+        direction: The color-line direction vector.
+        threshold: The maximum distance a point can have from the
+        color-line in order to support the line.
+    Returns:
+        support_matrix: A boolean matrix encoding pixel support.
     """
     height, width, _ = patch.shape
     support_matrix = np.full((height, width), False, dtype=bool)

@@ -26,6 +26,7 @@ def dehaze(image_path):
     plt.imshow(transmission_image)
     plt.show()
 
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('-i', '--image', help='Image to dehaze', type=str)

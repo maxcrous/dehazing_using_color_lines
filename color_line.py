@@ -20,9 +20,11 @@ class ColorLine:
         self.direction_sign()
 
     def direction_sign(self):
-        """ Change sign of direction vector when it's negative. """
-        if self.direction[0] < 0:
-            self.direction = -self.direction
+        """ Change sign of the direction vector when it's negative. """
+
+        for elem in self.direction:
+            if elem < 0:
+                self.direction = -self.direction
 
     def valid(self, airlight):
         """ Returns True when a color-line passes all quality tests. """
@@ -38,15 +40,7 @@ class ColorLine:
         return passed_all_tests
 
     def significant_line_support(self):
-        """
-        A small number of supporting pixels implies that either the line fails
-        to represent the patch pixels or that most of its pixels do not obey
-        Eq. (4) as its underlying assumptions do not hold. Therefore, we discard
-        lines with less than 40% pixel support in the patch. If the line passes
-        this test, we redefine the set of patch pixels Ω to be the subset of
-        pixels that support it and do not consider the rest of the pixels in
-        the following tests.
-        """
+        """ Test whether enough points support a color-line. """
         total_votes = self.patch.size
         threshold = 0.4 * total_votes
 
@@ -56,27 +50,15 @@ class ColorLine:
             return True
 
     def positive_reflectance(self):
-        """
-        The color-line orientation D, as discussed in Section 3.3, corresponds to
-        the surface reflectance vector R in Eq. (4). Therefore, we discard lines in
-        which negative values are found in its orientation vector D. More precisely,
-        since we obtain D up to an arbitrary factor, we identify this inconsistency
-        when D’s show mixed signs.
-        """
+        """ Ensure the color-line doesn't have mixed signs in its direction vector. """
         for elem in self.direction:
             if elem < 0:
                 return False
         return True
 
     def large_intersection_angle(self, airlight):
-        """
-        The operation of computing the inter- section of two lines, as we do in Eq. (5),
-        becomes more sensitive to noise as their orientation gets closer. At the Appendix
-        we show that the error in the estimated transmission grows like O(θ−1), where θ is
-        the angle between the line orientation D and atmospheric light vector A. Thus, we
-        discard lines with θ < 15◦ and weigh the confidence of the estimated transmission
-        accordingly when interpolating these values to a complete transmission map (explained below).
-        Figure 5 shows an example of patches with small and large inter- section angles.
+        """ Ensure the angle between the color-line orientation and
+            atmospheric light vector is large enough.
         """
         threshold = math.pi / 12
         angle = vg.angle(airlight, self.direction)
@@ -84,7 +66,9 @@ class ColorLine:
         return angle > threshold
 
     def unimodality(self):
-        """ """
+        """ Ensure the support points projected onto the color-line
+            follow a unimodal distribution.
+        """
         a, b = self.normalize_coefficients()
 
         total_score = 0
@@ -125,8 +109,10 @@ class ColorLine:
         return a, b
 
     def close_intersection(self, airlight):
-        """ Taken from http://geomalgorithms.com/a07-_distance.html and
-            https://www.youtube.com/watch?v=HC5YikQxwZA
+        """ Ensure the airlight and color-line (almost) intersect.
+
+            Algorithm taken from http://geomalgorithms.com/a07-_distance.html,
+            See https://www.youtube.com/watch?v=HC5YikQxwZA for algebraic solution.
         """
         threshold = 0.05
         v = airlight
@@ -145,9 +131,11 @@ class ColorLine:
         return length < threshold
 
     def valid_transmission(self):
+        """ Ensure the transmission falls within a valid range. """
         return 0 < self.transmission < 1
 
     def sufficient_shading_variability(self):
+        """ Ensure there is sufficient variability in the shading. """
         threshold = 0.02
 
         samples = []
@@ -164,6 +152,10 @@ class ColorLine:
         return score > threshold
 
     def calculate_transmission(self, airlight):
+        """ Determine the transmission, given the color-line and airlight.
+
+            Algorithm taken from appendix in Fattal's paper.
+        """
         d_unit = self.direction / np.linalg.norm(self.direction)
         a_unit = airlight / np.linalg.norm(airlight)
 
