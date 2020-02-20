@@ -1,5 +1,5 @@
 ## Dehazing using Color-lines
-This repository is an open-source implementation of [Fattal's algorithm for dehazing](https://www.cse.huji.ac.il/~raananf/projects/dehaze_cl/). 
+This repository contains an open source implementation of [Fattal's algorithm for dehazing](https://www.cse.huji.ac.il/~raananf/projects/dehaze_cl/). 
 It is meant as an accessible implementation with low complexity and ample documentation that can be used as an aid for studying the algorithm.   
   
 
