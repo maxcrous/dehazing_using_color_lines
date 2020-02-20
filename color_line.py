@@ -64,7 +64,7 @@ class ColorLine:
             atmospheric light vector is large enough.
         """
         angle = vg.angle(airlight, self.direction)
-
+        angle = abs(angle)
         return angle > thresholds.angle
 
     def unimodality(self):
@@ -132,7 +132,7 @@ class ColorLine:
 
     def valid_transmission(self):
         """ Ensure the transmission falls within a valid range. """
-        return 0 < self.transmission < 1
+        return 0.5 < self.transmission < 1
 
     def sufficient_shading_variability(self):
         """ Ensure there is sufficient variability in the shading. """
