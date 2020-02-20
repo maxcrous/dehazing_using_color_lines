@@ -11,8 +11,8 @@ class ColorLine:
     """ A color-line represented in vector form.
 
      Args:
-            point (3D numpy array): A vector of a point on the line.
-            direction (3D numpy array): The direction vector of the line.
+            point (numpy array): A vector of a point on the line.
+            direction (numpy array): The direction vector of the line.
     """
 
     def __init__(self, point, direction, patch, support_matrix):
