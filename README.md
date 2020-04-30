@@ -7,7 +7,7 @@ For a compiled implementation, consider the implementations by [Ekesium](https:/
 ![Current result](dehaze.gif)
 
 ## How to Use 
-Use a venv and install the required packages by running `pip install -r requirements.txt`. 
+Use a venv and install the required packages by running `pip install -r requirements.txt`.    
 Execute `python dehaze.py` to dehaze `bricks.png`. 
 
 
