@@ -24,13 +24,10 @@ def mrf_interpolate(transmission_image, sigma_image, img):
     for _ in range(constants.epochs):
         data_error_grad = grad_data_term(transmission_image, interpol_image, sigma_image)
         data_error_grad[transmission_image == 0] = 0
-        data_error = data_term(transmission_image, interpol_image, sigma_image)
-        data_error[transmission_image == 0] = 0
-        data_error = data_error.sum()
+        data_error = data_error_grad.sum()
 
         regularization_error_grad = grad_regularization_term(interpol_image, img)
         regularization_error = regularization_error_grad.sum()
-
         regularization_error_grad[regularization_error_grad > 2] = 2
         regularization_error_grad[regularization_error_grad < -2] = -2
 
