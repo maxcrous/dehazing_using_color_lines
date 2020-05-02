@@ -12,7 +12,8 @@ Execute `python dehaze.py` to dehaze `images/bricks.png`.
 
 ## Example output
 ![example output](images/example.png)
-![fattal result](images/fattal_result.png)
+<img src="images/fattal_result.png" width="35%">.
 
+To find other images with a given airlight vector, see the paper's [result page](https://www.cse.huji.ac.il/~raananf/projects/dehaze_cl/results/).
 ## TODO 
 * Implement [automatic airlight recovery](https://www.cse.huji.ac.il/~raananf/projects/atm_light/)
