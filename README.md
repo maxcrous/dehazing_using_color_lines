@@ -4,13 +4,15 @@ It is meant as an accessible implementation with low complexity and ample docume
   
 For a compiled implementation, consider the implementations by [Ekesium](https://github.com/ekexium/dehazing-using-color-lines) and [Tomlk](https://github.com/Tomlk/Dehazing-with-Color-Lines) (also pixel-wise inference, but in scala and C++). Alternatively, consider writing a vectorized implementation. 
 
-![Current result](dehaze.gif)
+![Current result](images/dehaze.gif)
 
 ## How to Use 
 Use a venv and install the required packages by running `pip install -r requirements.txt`.    
-Execute `python dehaze.py` to dehaze `bricks.png`. 
+Execute `python dehaze.py` to dehaze `images/bricks.png`. 
 
 ## Example output
-![example output](example.png)
+![example output](images/example.png)
+![fattal result](images/fattal_result.png)
+
 ## TODO 
 * Implement [automatic airlight recovery](https://www.cse.huji.ac.il/~raananf/projects/atm_light/)

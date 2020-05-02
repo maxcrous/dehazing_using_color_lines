@@ -1,6 +1,7 @@
 import cv2
 import matplotlib.pyplot as plt
 import numpy as np
+from os.path import join
 from tqdm import tqdm
 
 from linear_interpolation import clip
@@ -35,7 +36,7 @@ def dehaze(image_path, airlight=np.array([9.5, 10, 9.5])):
 
 
 def main():
-    dehazed = dehaze('bricks.png')
+    dehazed = dehaze(join('images', 'bricks.png'))
     rgb = cv2.cvtColor(dehazed.astype(np.float32), cv2.COLOR_BGR2RGB)
     plt.imshow(rgb)
     plt.show()
