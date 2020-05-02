@@ -15,5 +15,19 @@ Execute `python dehaze.py` to dehaze `images/bricks.png`.
 <img src="images/fattal_result.png" width="35%">.
 
 To find other images with a given airlight vector, see the paper's [result page](https://www.cse.huji.ac.il/~raananf/projects/dehaze_cl/results/).
+
+## File structure 
+| Name                    | Purpose                                                                           |
+|-------------------------|-----------------------------------------------------------------------------------|
+| dehaze.py               | Main function                                                                     |
+| ransac.py               | RANSAC algorithm for evaluating color-line hypotheses                             |
+| window.py               | A windowing class for concise tiling                                              |
+| color_line.py           | Functions for evaluating color-line validity                                      |
+| constants.py            | All constants and thresholds (comments note where it deviates from Fattal)        |
+| linear_interpolation.py | Linear interpolation of the transmission image                                    |
+| markov_random_field.py  | Markov random field interpolation and smoothing functions (autograd optimization) |
+| recover.py              | Recovers the dehazed pixel values given the estimated transmission map            |
+
+
 ## TODO 
 * Implement [automatic airlight recovery](https://www.cse.huji.ac.il/~raananf/projects/atm_light/)
