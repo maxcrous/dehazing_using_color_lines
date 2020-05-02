@@ -10,6 +10,7 @@ For a compiled implementation, consider the implementations by [Ekesium](https:/
 Use a venv and install the required packages by running `pip install -r requirements.txt`.    
 Execute `python dehaze.py` to dehaze `bricks.png`. 
 
-
-## todos 
+## Example output
+![example output](example.png)
+## TODO 
 * Implement [automatic airlight recovery](https://www.cse.huji.ac.il/~raananf/projects/atm_light/)

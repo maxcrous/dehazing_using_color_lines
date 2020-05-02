@@ -1,8 +1,8 @@
 import math
-import numpy as np
+import autograd.numpy as np
 import vg
 
-import thresholds
+import constants as thresholds
 
 np.seterr(divide='ignore', invalid='ignore')
 
@@ -40,12 +40,13 @@ class ColorLine:
                             and self.close_intersection(airlight)
                             and self.valid_transmission()
                             and self.sufficient_shading_variability())
+        
         return passed_all_tests
 
     def significant_line_support(self):
         """ Test whether enough points support a color-line. """
-        total_votes = self.patch.size
-        threshold = thresolds.support * total_votes
+        total_votes = self.support_matrix.size
+        threshold = thresholds.support * total_votes
 
         if self.support_matrix.sum() < threshold:
             return False
@@ -132,7 +133,7 @@ class ColorLine:
 
     def valid_transmission(self):
         """ Ensure the transmission falls within a valid range. """
-        return 0.5 < self.transmission < 1
+        return 0 < self.transmission < 1
 
     def sufficient_shading_variability(self):
         """ Ensure there is sufficient variability in the shading. """
@@ -163,3 +164,13 @@ class ColorLine:
 
         s = (np.dot(-dv, ad) + av) / (1 - np.dot(ad, ad))
         self.transmission = 1 - s
+
+    def sigma(self, airlight):
+        """ Calculates the sigma, i.e., the color-line uncertainty."""
+        similarity = np.dot(self.direction, airlight)
+
+        result = thresholds.sigma_scale \
+               * np.linalg.norm(airlight - self.direction * similarity) \
+               * (1 - similarity ** 2) ** -1
+
+        return result
