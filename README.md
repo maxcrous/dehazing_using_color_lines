@@ -1,5 +1,5 @@
 ## Dehazing using Color-lines
-This repository contains an open source implementation of [Fattal's algorithm for dehazing](https://www.cse.huji.ac.il/~raananf/projects/dehaze_cl/). 
+This repository contains an open-source implementation of [Fattal's algorithm for dehazing](https://www.cse.huji.ac.il/~raananf/projects/dehaze_cl/). 
 It is meant as an accessible implementation with low complexity and ample documentation that can be used as an aid for studying the algorithm.   
 
 Dehazing a single image with linear interpolation takes around **10 seconds** on a modern CPU (previously 60 seconds). This is achieved by using [Numba](http://numba.pydata.org/) in the main loop. Speed is improved even further by Numba when dehazing multiple images successively.
