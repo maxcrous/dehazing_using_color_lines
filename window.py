@@ -1,4 +1,3 @@
-
 class SlidingWindow:
     """ An iterator class that acts as a window function over an image.
 
@@ -41,7 +40,7 @@ class SlidingWindow:
             for y in range(y_start, y_end, hop_size):
                 for x in range(x_start, x_end, hop_size):
                     patch = image[y:y + patch_size,
-                                  x:x + patch_size, :]
+                                  x:x + patch_size, :].copy()
 
                     window = Window(patch,
                                     y=y + patch_size - 1 // 2,

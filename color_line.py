@@ -1,12 +1,11 @@
 import math
-import autograd.numpy as np
-import vg
+import numpy as np
 
 import constants as thresholds
+from numba_patch import jitclass, spec
 
-np.seterr(divide='ignore', invalid='ignore')
 
-
+@jitclass(spec)
 class ColorLine:
     """ A color-line represented in vector form.
 
@@ -19,7 +18,7 @@ class ColorLine:
         self.point = point
         self.direction = direction
         self.patch = patch
-        self.transmission = None
+        self.transmission = 0
         self.support_matrix = support_matrix
         self.direction_sign()
 
@@ -32,15 +31,18 @@ class ColorLine:
 
     def valid(self, airlight):
         """ Returns True when a color-line passes all quality tests. """
+        if not np.any(self.direction):
+            return False
+
         self.calculate_transmission(airlight)
-        passed_all_tests = (self.significant_line_support
+        passed_all_tests = (self.significant_line_support()
                             and self.positive_reflectance()
                             and self.large_intersection_angle(airlight)
                             and self.unimodality()
                             and self.close_intersection(airlight)
                             and self.valid_transmission()
                             and self.sufficient_shading_variability())
-        
+
         return passed_all_tests
 
     def significant_line_support(self):
@@ -64,7 +66,7 @@ class ColorLine:
         """ Ensure the angle between the color-line orientation and
             atmospheric light vector is large enough.
         """
-        angle = vg.angle(airlight, self.direction)
+        angle = self.angle(airlight, self.direction)
         angle = abs(angle)
         return angle > thresholds.angle
 
@@ -105,7 +107,6 @@ class ColorLine:
                         min_product = product
                     if product > max_product:
                         max_product = product
-
         a = math.pi / (max_product - min_product)
         b = -min_product
         return a, b
@@ -142,7 +143,8 @@ class ColorLine:
             for idx, pixel in enumerate(row):
                 if self.support_matrix[idy][idx]:
                     direction = pixel - self.point
-                    samples.append(direction)
+                    dot = np.dot(direction, self.direction)
+                    samples.append(dot)
 
         samples = np.array(samples)
         variance = np.var(samples)
@@ -161,8 +163,7 @@ class ColorLine:
         ad = np.dot(a_unit, d_unit)
         dv = np.dot(d_unit, self.point)
         av = np.dot(a_unit, self.point)
-
-        s = (np.dot(-dv, ad) + av) / (1 - np.dot(ad, ad))
+        s = (-dv * ad + av) / (1 - ad * ad)
         self.transmission = 1 - s
 
     def sigma(self, airlight):
@@ -174,3 +175,11 @@ class ColorLine:
                * (1 - similarity ** 2) ** -1
 
         return result
+
+    def angle(self, v1, v2):
+        """ Calculates the angle between two vectors, from
+            https://stackoverflow.com/a/13849249/8910185"""
+        v1 = v1 / np.linalg.norm(v1)
+        v2 = v2 / np.linalg.norm(v2)
+
+        return np.arccos(np.dot(v1, v2))

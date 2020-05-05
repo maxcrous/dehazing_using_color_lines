@@ -34,8 +34,8 @@ def mrf_interpolate(transmission_image, sigma_image, img):
         interpol_image += constants.learning_rate * regularization_error_grad
         interpol_image += constants.learning_rate * data_error_grad
 
-        print('reg error: {}'.format(-regularization_error))
-        print('data error: {}'.format(data_error))
+        print('reg error: {}'.format(abs(regularization_error)))
+        print('data error: {}'.format(abs(data_error)))
 
     interpol_image[interpol_image > 1] = 1
     interpol_image[interpol_image < 0.3] = 0.3
@@ -61,17 +61,17 @@ def regularization_term(interpol_image, image):
         This term is responsible for smoothing the image according to
         the pixel differences present in the rgb image.
     """
-    filter = np.full((51, 51), -1)
-    filter[24, 24] = 2600
+    kernel = np.full((51, 51), -1)
+    kernel[24, 24] = 2600
 
     b, g, r = np.split(image, 3, axis=2)
 
-    b_diff = convolve(filter, np.squeeze(b))
-    g_diff = convolve(filter, np.squeeze(g))
-    r_diff = convolve(filter, np.squeeze(r))
+    b_diff = convolve(kernel, np.squeeze(b))
+    g_diff = convolve(kernel, np.squeeze(g))
+    r_diff = convolve(kernel, np.squeeze(r))
 
     image_diff = np.stack((b_diff, g_diff, r_diff), axis=-1)
     image_diff = np.linalg.norm(image_diff, axis=2)
-    interpol_diff = convolve(interpol_image, filter)
+    interpol_diff = convolve(interpol_image, kernel)
     error = (interpol_diff / image_diff) ** 2
     return -error

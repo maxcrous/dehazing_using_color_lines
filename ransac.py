@@ -1,4 +1,5 @@
-import autograd.numpy as np
+import numpy as np
+from numba import jit_module
 
 from color_line import ColorLine
 
@@ -83,10 +84,13 @@ def projection(v1, v2):
     Returns:
         result: A vector projection.
     """
-    if not np.array_equal(v1, np.zeros(3)):
+    v1 = v1.astype(np.float64)
+
+    if np.any(v1):
         result = (np.dot(v1, v2) / np.dot(v1, v1)) * v1
     else:
         result = np.zeros(3)
+
     return result
 
 
@@ -107,7 +111,7 @@ def create_support_matrix(patch, point, direction, threshold):
         support_matrix: A boolean matrix encoding pixel support.
     """
     height, width, _ = patch.shape
-    support_matrix = np.full((height, width), False, dtype=bool)
+    support_matrix = np.full((height, width), False, dtype=np.bool_)
 
     for idy, row in enumerate(patch):
         for idx, pixel in enumerate(row):
@@ -117,3 +121,6 @@ def create_support_matrix(patch, point, direction, threshold):
                 support_matrix[idy][idx] = True
 
     return support_matrix
+
+
+jit_module(nopython=True, error_model="numpy")

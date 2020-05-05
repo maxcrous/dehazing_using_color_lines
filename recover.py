@@ -1,4 +1,4 @@
-import autograd.numpy as np
+import numpy as np
 
 
 def recover(image, transmission, airlight):

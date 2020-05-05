@@ -1,8 +1,8 @@
+from os.path import join
+
 import cv2
 import matplotlib.pyplot as plt
 import numpy as np
-from os.path import join
-from tqdm import tqdm
 
 from linear_interpolation import clip
 from linear_interpolation import interpolate
@@ -20,11 +20,11 @@ def dehaze(image_path, airlight=np.array([9.5, 10, 9.5])):
     sigma_image = np.zeros(img.shape[:2])
     sliding_window = SlidingWindow(img, scans=5)
 
-    for window in tqdm(sliding_window):
+    for window in sliding_window:
         patch = window.patch
         color_line = ransac(patch, iterations=3)
 
-        if color_line.valid(airlight=airlight):
+        if color_line.valid(airlight):
             transmission_image[window.y, window.x] = color_line.transmission
             sigma_image[window.y, window.x] = color_line.sigma(airlight)
 
