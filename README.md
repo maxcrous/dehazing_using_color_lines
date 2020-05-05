@@ -1,6 +1,8 @@
 ## Dehazing using Color-lines
 This repository contains an open source implementation of [Fattal's algorithm for dehazing](https://www.cse.huji.ac.il/~raananf/projects/dehaze_cl/). 
 It is meant as an accessible implementation with low complexity and ample documentation that can be used as an aid for studying the algorithm.   
+
+Dehazing a single image takes around **10 seconds** on a modern CPU. This achieved by using [Numba](http://numba.pydata.org/) in the main loop. 
   
 For a compiled implementation, consider the implementations by [Ekesium](https://github.com/ekexium/dehazing-using-color-lines) and [Tomlk](https://github.com/Tomlk/Dehazing-with-Color-Lines) (also pixel-wise inference, but in scala and C++). Alternatively, consider writing a vectorized implementation. 
 
