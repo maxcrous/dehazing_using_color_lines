@@ -33,4 +33,4 @@ To find other images with a given airlight vector, see the paper's [result page]
 
 
 ## TODO 
-* Implement [automatic airlight recovery](https://www.cse.huji.ac.il/~raananf/projects/atm_light/)
+* Implement [automatic airlight recovery paper](https://www.cse.huji.ac.il/~raananf/projects/atm_light/)
